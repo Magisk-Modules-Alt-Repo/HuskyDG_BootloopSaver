@@ -1,7 +1,7 @@
 
 This update does not anything new, just some changes in installation script:
 
-- If boot partition is read-only, the installation will fail to flash new custom boot image into boot partition, so copy custom boot image to Internal Storage and tell user to flash it from Fastboot and Recovery
+- On some devices (Mediatek) doesn't allow to modify boot partition while in live mode, boot partition becomes read-only, the installation will fail to flash new custom boot image into boot partition, it will now copy custom boot image to Internal Storage and tell user to flash it from Fastboot and Recovery
 
 ## v1.7 Changes
 
