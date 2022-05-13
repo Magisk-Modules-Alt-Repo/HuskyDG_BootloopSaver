@@ -3,10 +3,11 @@ get_flags
 find_boot_image
 exit_ui_print(){
     ui_print "$1"
-    exit 1
+    exit
 }
 ( if [ ! -z "$BOOTIMAGE" ]; then
     ui_print "- Target boot image: $BOOTIMAGE"
+    [ "$RECOVERYMODE" == "true" ] && ui_print "- Recovery mode is present, the script might patch recovery image..."
     mkdir "$TMPDIR/boot"
     dd if=$BOOTIMAGE of="$TMPDIR/boot/boot.img"
     ui_print "- Unpack boot image"
