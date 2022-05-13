@@ -3,10 +3,11 @@ get_flags
 find_boot_image
 exit_ui_print(){
     ui_print "$1"
-    exit 1
+    exit
 }
 ( if [ ! -z "$BOOTIMAGE" ]; then
     ui_print "- Target boot image: $BOOTIMAGE"
+    [ "$RECOVERYMODE" == "true" ] && ui_print "- Recovery mode is present, the script might patch recovery image..."
     mkdir "$TMPDIR/boot"
     dd if=$BOOTIMAGE of="$TMPDIR/boot/boot.img"
     ui_print "- Unpack boot image"
@@ -115,7 +116,15 @@ EOF
           exit_ui_print "! Insufficient partition size"
           ;;
         2)
-          exit_ui_print "! $BOOTIMAGE is read only"
+          FILENAME="/sdcard/Download/bootloopsaver-patched-boot-$RANDOM.img"
+          cp "$TMPDIR/boot/new-boot.img" "$FILENAME"
+          ui_print "! $BOOTIMAGE is read-only"
+          ui_print "*****************************************"
+          ui_print "    Oops! It seems your boot partition is read-only"
+          ui_print "    I have saved your boot image to $FILENAME"
+          ui_print "    Please try flashing this boot image from fastboot or recovery"
+          ui_print "*****************************************"
+          exit_ui_print "! Unable to flash boot image"
           ;;
      esac
      ui_print "- All done!"
