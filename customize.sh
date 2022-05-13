@@ -115,7 +115,15 @@ EOF
           exit_ui_print "! Insufficient partition size"
           ;;
         2)
-          exit_ui_print "! $BOOTIMAGE is read only"
+          FILENAME="/sdcard/Download/bootloopsaver-patched-boot-$RANDOM.img"
+          cp "$TMPDIR/boot/new-boot.img" "$FILENAME"
+          ui_print "! $BOOTIMAGE is read-only"
+          ui_print "*****************************************"
+          ui_print "    Oops! It seems your boot partition is read-only"
+          ui_print "    I have saved your boot image to $FILENAME"
+          ui_print "    Please try flashing this boot image from fastboot or recovery"
+          ui_print "*****************************************"
+          exit_ui_print "! Unable to flash boot image"
           ;;
      esac
      ui_print "- All done!"
