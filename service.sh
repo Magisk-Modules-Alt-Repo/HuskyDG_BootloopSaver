@@ -1,12 +1,36 @@
 #!/system/bin/sh
 #Bootloop saver by HuskyDG
 
-MODDIR=${0%/*}
-. "$MODDIR/utils.sh"
+MODULEDIR=${0%/*}
+. "$MODULEDIR/utils.sh"
+
+rm -rf /data/adb/rm_saver
+cat <<EOF >/data/adb/rm_saver
+#!/system/bin/sh
+. /data/adb/magisk/util_functions.sh
+. /data/adb/modules/${MODULEDIR##*/}/uninstall.sh
+touch /data/adb/modules/${MODULEDIR##*/}/remove
+reboot
+EOF
+chmod 777 /data/adb/rm_saver
+
+post_fs_dir
+
+mkdir -p "$MAGISKTMP/.magisk/${MODULEDIR##*/}"
+cp "$MODULEDIR/module.prop" "$MAGISKTMP/.magisk/${MODULEDIR##*/}/module.prop"
+mount --bind "$MAGISKTMP/.magisk/${MODULEDIR##*/}" "$MAGISKTMP/.magisk/modules/${MODULEDIR##*/}"
+
+[ -f "$POSTFSDIR/note.txt" ] && MESSAGE="$(cat "$POSTFSDIR/note.txt" | head -c100)"
+
+if [ -f "$MAGISKTMP/bootloopsaver/module.prop" ]; then
+    sed -Ei "s/^description=(\[.*][[:space:]]*)?/description=[ 😊 Script is installed in boot image. $MESSAGE ] /g" "$MAGISKTMP/.magisk/${MODULEDIR##*/}/module.prop"
+else
+    sed -Ei "s/^description=(\[.*][[:space:]]*)?/description=[ 😵 Script is not installed in boot image. Please reinstall this module. $MESSAGE ] /g" "$MAGISKTMP/.magisk/${MODULEDIR##*/}/module.prop"
+fi
 
 
-rm -rf /cache/bootloop_saver.log.bak
-mv -f /cache/bootloop_saver.log /cache/bootloop_saver.log.bak 2>/dev/null
+rm -rf "$POSTFSDIR/bootloop_saver.log.bak"
+mv -f "$POSTFSDIR/bootloop_saver.log" "$POSTFSDIR/bootloop_saver.log.bak" 2>/dev/null
 write_log "bootloop saver started"
 MAIN_ZYGOTE_NICENAME=zygote
 CPU_ABI=$(getprop ro.product.cpu.api)

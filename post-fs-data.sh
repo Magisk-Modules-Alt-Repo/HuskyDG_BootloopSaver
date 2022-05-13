@@ -1,8 +1,9 @@
-MODDIR=${0%/*}
-. "$MODDIR/utils.sh"
+MODULEDIR=${0%/*}
+MAGISKTMP="$(magisk --path)"
+. "$MODULEDIR/utils.sh"
 DISABLE=false
 
-touch "$MODDIR/skip_mount"
+touch "$MODULEDIR/skip_mount"
 
 for dir in /cache /data/unencrypted /metadata /persist /mnt/vendor/persist; do
 if [ -f "$dir/disable_magisk" ]; then
