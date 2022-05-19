@@ -9,7 +9,13 @@ exit_ui_print(){
     ui_print "- Target boot image: $BOOTIMAGE"
     [ "$RECOVERYMODE" == "true" ] && ui_print "- Recovery mode is present, the script might patch recovery image..."
     mkdir "$TMPDIR/boot"
-    dd if=$BOOTIMAGE of="$TMPDIR/boot/boot.img"
+    if [ -c "$BOOTIMAGE" ]; then
+        nanddump -f "$TMPDIR/boot/boot.img" "$BOOTIMAGE"
+        BOOTNAND="$BOOTIMAGE"
+        BOOTIMAGE="$TMPDIR/boot/boot.img"
+    else
+        dd if="$BOOTIMAGE" of="$TMPDIR/boot/boot.img"
+    fi
     ui_print "- Unpack boot image"
     cd "$TMPDIR/boot" || exit 1
     /data/adb/magisk/magiskboot unpack boot.img
@@ -109,6 +115,7 @@ EOF
 "add 0750 overlay.d/sbin/safemode.sh safemode.sh"
      ui_print "- Repack boot image"
      /data/adb/magisk/magiskboot repack boot.img || exit_ui_print "! Unable to repack boot image"
+     [ -e "$BOOTNAND" ] && BOOTIMAGE="$BOOTNAND"
      ui_print "- Flashing new boot image"
      flash_image "$TMPDIR/boot/new-boot.img" "$BOOTIMAGE"
      case $? in
