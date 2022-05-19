@@ -1,7 +1,7 @@
 id=huskydg_bootloopsaver
 name=Magisk Bootloop Protector
-version=v1.7.1
-versionCode=10012
+version=v1.7.2
+versionCode=10013
 author=HuskyDG
 description=Protect your system from bootloop caused by Magisk modules.
 updateJson=https://raw.githubusercontent.com/Magisk-Modules-Alt-Repo/HuskyDG_BootloopSaver/master/module.json
