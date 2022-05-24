@@ -45,8 +45,10 @@ This feature is not enabled by default, to enable this, create a blank file name
 
 ## Uninstall this module
 
-Open Termux and execute this command:
+- Method 1. Open Termux and execute this command:
 
 ```
 su -c /data/adb/rm_saver
 ```
+
+- Method 2. Flash/restore stock boot image and re-root with Magisk
