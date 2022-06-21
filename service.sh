@@ -3,30 +3,29 @@
 
 MODULEDIR=${0%/*}
 . "$MODULEDIR/utils.sh"
-
-rm -rf /data/adb/rm_saver
-cat <<EOF >/data/adb/rm_saver
-#!/system/bin/sh
-. /data/adb/magisk/util_functions.sh
-. /data/adb/modules/${MODULEDIR##*/}/uninstall.sh
-touch /data/adb/modules/${MODULEDIR##*/}/remove
-reboot
-EOF
-chmod 777 /data/adb/rm_saver
+MAGISKTMP="$(magisk --path)"
+[ -z "$MAGISKTMP" ] && MAGISKTMP=/sbin
 
 post_fs_dir
 
-mkdir -p "$MAGISKTMP/.magisk/${MODULEDIR##*/}"
-cp "$MODULEDIR/module.prop" "$MAGISKTMP/.magisk/${MODULEDIR##*/}/module.prop"
-mount --bind "$MAGISKTMP/.magisk/${MODULEDIR##*/}" "$MAGISKTMP/.magisk/modules/${MODULEDIR##*/}"
+
+MIRRORPROP="$MAGISKTMP/.magisk/modules/${MODULEDIR##*/}/module.prop"
+TMPPROP="$MAGISKTMP/saver.prop"
+cat "$MIRRORPROP" >"$TMPPROP"
+rm -rf /data/adb/saver
+ln -sf "$MAGISKTMP/.magisk/modules/${MODULEDIR##*/}" /data/adb/saver
 
 [ -f "$POSTFSDIR/note.txt" ] && MESSAGE="$(cat "$POSTFSDIR/note.txt" | head -c100)"
 
 if [ -f "$MAGISKTMP/bootloopsaver/module.prop" ]; then
-    sed -Ei "s/^description=(\[.*][[:space:]]*)?/description=[ 😊 Script is installed in boot image. $MESSAGE ] /g" "$MAGISKTMP/.magisk/${MODULEDIR##*/}/module.prop"
+    sed -Ei "s/^description=(\[.*][[:space:]]*)?/description=[ ✔✔ Working with advanced functions. $MESSAGE ] /g" "$TMPPROP"
 else
-    sed -Ei "s/^description=(\[.*][[:space:]]*)?/description=[ 😵 Script is not installed in boot image. Please reinstall this module. $MESSAGE ] /g" "$MAGISKTMP/.magisk/${MODULEDIR##*/}/module.prop"
+    sed -Ei "s/^description=(\[.*][[:space:]]*)?/description=[ ✔ Working with basic functions. $MESSAGE ] /g" "$TMPPROP"
 fi
+
+mount --bind "$TMPPROP" "/data/adb/saver/module.prop"
+
+exit
 
 
 rm -rf "$POSTFSDIR/bootloop_saver.log.bak"
