@@ -25,8 +25,6 @@ fi
 
 mount --bind "$TMPPROP" "/data/adb/saver/module.prop"
 
-exit
-
 
 rm -rf "$POSTFSDIR/bootloop_saver.log.bak"
 mv -f "$POSTFSDIR/bootloop_saver.log" "$POSTFSDIR/bootloop_saver.log.bak" 2>/dev/null
