@@ -279,3 +279,4 @@ if [ ! -z "$MAGISKTMP" ]; then
     sed -Ei "s/^description=(\[.*][[:space:]]*)?/description=[ ✔ Module has been updated ] /g" "$MAGISKTMP/saver.prop"
 fi
 fi
+rm -rf "$MODPATH/addon"

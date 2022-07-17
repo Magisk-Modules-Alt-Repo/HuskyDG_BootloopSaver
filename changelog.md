@@ -1,2 +1,1 @@
-- Patching boot image is now optional. Basic functions are available without patching boot image.
-- You can reflash this module to completely uninstall module
+- Fix Auto detect not working
