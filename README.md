@@ -53,3 +53,7 @@ This feature is not enabled by default, to enable this, create a blank file name
 - /persist
 - /metadata
 - /mnt/vendor/persist
+
+## Uninstall this module
+
+- Reflash module and select Uninstall
